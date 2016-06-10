@@ -50,6 +50,7 @@ impl AppDirType {
     }
 }
 
+#[derive(Debug)]
 pub enum AppDirError {
     Io(std::io::Error),
     // NotFound(PathBuf),
