@@ -49,7 +49,7 @@ mod tests {
             name: "Awesome App".into(),
             author: "Dedicated Dev".into(),
         };
-        let path = "/.not-hidden/subfolder!/with?/uni.code/¡Olé!/";
+        let path = ::std::path::Path::new("/.not-hidden/subfolder!/with?/uni.code/¡Olé!/");
         let types = [UserConfig, UserData, UserCache, SharedData, SharedConfig];
         for &t in types.iter() {
             println!("{:?} data root = {:?}", t, get_data_root(t));
