@@ -1,7 +1,7 @@
 use common::{AppDirsError, AppDataType, AppInfo};
 use utils;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Component, Path, PathBuf};
 
 #[cfg(target_os="macos")]
 mod platform {
@@ -28,8 +28,9 @@ mod platform {
 /// If the directory structure does not exist, this function will recursively
 /// create the full hierarchy. Therefore, a result of `Ok` guarantees that the
 /// returned path exists.
-pub fn app_dir(t: AppDataType, app: &AppInfo, path: &str) -> Result<PathBuf, AppDirsError> {
-    let path = try!(get_app_dir(t, app, &path));
+pub fn app_dir<S>(t: AppDataType, app: &AppInfo, path: S) -> Result<PathBuf, AppDirsError>
+where S: AsRef<Path> {
+    let path = try!(get_app_dir(t, app, &path.as_ref()));
     match fs::create_dir_all(&path) {
         Ok(..) => Ok(path),
         Err(e) => Err(e.into()),
@@ -39,22 +40,32 @@ pub fn app_dir(t: AppDataType, app: &AppInfo, path: &str) -> Result<PathBuf, App
 /// Returns (but **does not create**) path to **app-specific** data
 /// **subdirectory** for provided data type and subdirectory path.
 ///
-/// The `path` parameter should be a valid relative path separated by
-/// **forward slashes** (`/`).
+/// The `path` parameter must be a valid relative path.
 ///
 /// A result of `Ok` means that we determined where the data SHOULD go, but
 /// it DOES NOT guarantee that the directory actually exists. (See
 /// [`app_dir`](fn.app_dir.html).)
-pub fn get_app_dir(t: AppDataType, app: &AppInfo, path: &str) -> Result<PathBuf, AppDirsError> {
+pub fn get_app_dir<S>(t: AppDataType, app: &AppInfo, path: S) -> Result<PathBuf, AppDirsError>
+where S: AsRef<Path> {
     if app.author.len() == 0 || app.name.len() == 0 {
         return Err(AppDirsError::InvalidAppInfo);
     }
-    app_root(t, app).map(|mut root| {
-        for component in path.split("/").filter(|s| s.len() > 0) {
-            root.push(utils::sanitized(component));
+
+    match app_root(t, app) {
+        Ok(mut root) => {
+            for component in path.as_ref().components() {
+                match component {
+                    Component::Prefix(_) | Component::RootDir => {
+                        return Err(AppDirsError::NotRelativePath);
+                    }
+                    component => root.push(try!(utils::os_sanitized(component.as_ref()))),
+                }
+            }
+
+            Ok(root)
         }
-        root
-    })
+        Err(error) => Err(error),
+    }
 }
 
 /// Creates (if necessary) and returns path to **app-specific** data

@@ -1,3 +1,7 @@
+use std::ffi::OsStr;
+
+use common::AppDirsError;
+
 /// Returns a cross-platform-filename-safe version of any string.
 ///
 /// This is used internally to generate app data directories based on app
@@ -25,4 +29,14 @@ pub fn sanitized(component: &str) -> String {
         }
     }
     buf
+}
+
+/// Attempts to sanitize an `OsStr`, using the logic as `sanitized`.
+///
+/// Returns an error if the provided `component` is invalid UTF-8.
+pub fn os_sanitized(component: &OsStr) -> Result<String, AppDirsError> {
+    match component.to_str() {
+        Some(component) => Ok(sanitized(component)),
+        None => Err(AppDirsError::InvalidUtf8),
+    }
 }
