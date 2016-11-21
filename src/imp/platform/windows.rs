@@ -31,7 +31,8 @@ pub const USE_AUTHOR: bool = true;
 
 pub fn get_app_dir(t: AppDataType) -> Result<PathBuf, AppDirsError> {
     let folder_id = match t {
-        UserConfig | UserData | SharedConfig | SharedData => &FOLDERID_RoamingAppData,
+        UserConfig | UserData => &FOLDERID_RoamingAppData,
+        SharedConfig | SharedData => &FOLDERID_ProgramData,
         UserCache => &FOLDERID_LocalAppData,
     };
     get_folder_path(folder_id).map(|os_str| os_str.into())
@@ -53,6 +54,15 @@ static FOLDERID_LocalAppData: GUID = GUID {
     Data2: 0x6FBA,
     Data3: 0x4FCF,
     Data4: [0x9D, 0x55, 0x7B, 0x8E, 0x7F, 0x15, 0x70, 0x91],
+};
+
+/// https://msdn.microsoft.com/en-us/library/dd378457.aspx#FOLDERID_ProgramData
+#[allow(non_upper_case_globals)]
+static FOLDERID_ProgramData: GUID = GUID {
+    Data1: 0x62AB5D82,
+    Data2: 0xFDC1,
+    Data3: 0x4DC3,
+    Data4: [0xA9, 0xDD, 0x07, 0x0D, 0x1D, 0x49, 0x5D, 0x97],
 };
 
 /// Wrapper around `winapi::PWSTR` to automatically free the string pointer.
