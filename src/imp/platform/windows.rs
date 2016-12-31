@@ -31,9 +31,9 @@ pub const USE_AUTHOR: bool = true;
 
 pub fn get_app_dir(t: AppDataType) -> Result<PathBuf, AppDirsError> {
     let folder_id = match t {
-        UserConfig | UserData => &FOLDERID_RoamingAppData,
+        UserConfig => &FOLDERID_RoamingAppData,
         SharedConfig | SharedData => &FOLDERID_ProgramData,
-        UserCache => &FOLDERID_LocalAppData,
+        UserCache | UserData => &FOLDERID_LocalAppData,
     };
     get_folder_path(folder_id).map(|os_str| os_str.into())
 }
