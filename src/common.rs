@@ -35,6 +35,39 @@ pub struct OwningAppInfo {
     pub author: String,
 }
 
+/// Let's see...
+///
+/// ```
+/// use app_dirs::*;
+/// const APP_INFO: EAppInfo = EAppInfo::StaticAppInfo{name: "Awesome App", author: "Dedicated Dev"};
+/// ```
+pub enum EAppInfo {
+    StaticAppInfo  {
+        /// Name of your app (e.g. "Hearthstone").
+        name: &'static str,
+        /// Author of your app (e.g. "Blizzard").
+        author: &'static str,
+    },
+    OwningAppInfo {
+        /// Name of your app (e.g. "Hearthstone").
+        name: String,
+        /// Author of your app (e.g. "Blizzard").
+        author: String,
+    }
+}
+
+/// ```
+/// use app_dirs::*;
+/// use std::borrow::Cow;
+/// const APP_INFO: CAppInfo = CAppInfo{name: Cow::Borrowed("Awesome App"), author: Cow::Borrowed("Dedicated Dev")};
+/// let e = CAppInfo{name: Cow::Owned("Awesome App".to_owned()), author: Cow::Owned("Dedicated Dev".to_owned())};
+/// ```
+use std::borrow::Cow;
+pub struct CAppInfo {
+    pub name: Cow<'static, str>,
+    pub author: Cow<'static, str>,
+}
+
 pub trait AppInfo {
     /// Name of your app (e.g. "Hearthstone").
     fn name(&self) -> &str;
