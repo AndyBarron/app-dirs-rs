@@ -1,12 +1,14 @@
 use std;
 
+
+
 /// Struct that holds information about your app.
 ///
 /// It's recommended to create a single `const` instance of `AppInfo`:
 ///
 /// ```
-/// use app_dirs::AppInfo;
-/// const APP_INFO: AppInfo = AppInfo{name: "Awesome App", author: "Dedicated Dev"};
+/// use app_dirs::StaticAppInfo;
+/// const APP_INFO: StaticAppInfo = StaticAppInfo{name: "Awesome App", author: "Dedicated Dev"};
 /// ```
 ///
 /// # Caveats
@@ -18,12 +20,48 @@ use std;
 /// The `author` property is currently only used by Windows, as macOS and *nix
 /// specifications don't require it. Make sure your `name` string is unique!
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
-pub struct AppInfo {
+pub struct StaticAppInfo {
     /// Name of your app (e.g. "Hearthstone").
     pub name: &'static str,
     /// Author of your app (e.g. "Blizzard").
     pub author: &'static str,
 }
+
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+pub struct OwningAppInfo {
+    /// Name of your app (e.g. "Hearthstone").
+    pub name: String,
+    /// Author of your app (e.g. "Blizzard").
+    pub author: String,
+}
+
+pub trait AppInfo {
+    /// Name of your app (e.g. "Hearthstone").
+    fn name(&self) -> &str;
+    /// Author of your app (e.g. "Blizzard").
+    fn author(&self) -> &str;
+}
+
+impl AppInfo for StaticAppInfo {
+    fn name(&self) -> &str {
+        self.name
+    }
+
+    fn author(&self) -> &str {
+        self.author
+    }
+}
+
+impl AppInfo for OwningAppInfo {
+    fn name(&self) -> &str {
+        &self.name
+    }
+
+    fn author(&self) -> &str {
+        &self.author
+    }
+}
+
 
 /// Enum specifying the type of app data you want to store.
 ///
