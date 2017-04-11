@@ -2,14 +2,7 @@ use std;
 
 
 
-/// Struct that holds information about your app.
-///
-/// It's recommended to create a single `const` instance of `AppInfo`:
-///
-/// ```
-/// use app_dirs::StaticAppInfo;
-/// const APP_INFO: StaticAppInfo = StaticAppInfo{name: "Awesome App", author: "Dedicated Dev"};
-/// ```
+/// Trait for a struct that holds information about your app.
 ///
 /// # Caveats
 /// Functions in this library sanitize any characters that could be
@@ -19,6 +12,22 @@ use std;
 ///
 /// The `author` property is currently only used by Windows, as macOS and *nix
 /// specifications don't require it. Make sure your `name` string is unique!
+pub trait AppInfo {
+    /// Name of your app (e.g. "Hearthstone").
+    fn name(&self) -> &str;
+    /// Author of your app (e.g. "Blizzard").
+    fn author(&self) -> &str;
+}
+
+/// Struct that holds fixed information about your app.
+/// 
+/// It's recommended to create a single `const` instance of `StaticAppInfo`:
+///
+/// ```
+/// use app_dirs::StaticAppInfo;
+/// const APP_INFO: StaticAppInfo = StaticAppInfo{name: "Awesome App", author: "Dedicated Dev"};
+/// ```
+///
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct StaticAppInfo {
     /// Name of your app (e.g. "Hearthstone").
@@ -27,19 +36,21 @@ pub struct StaticAppInfo {
     pub author: &'static str,
 }
 
+/// Struct that holds fixed information about your app for when it
+/// can't be determined at compile time.  For instance, a library might
+/// look for data in a location provided by a user or loaded from a
+/// config file.
+///
+/// ```
+/// use app_dirs::DynamicAppInfo;
+/// let APP_INFO = DynamicAppInfo{name: "Awesome App".to_string(), author: "Dedicated Dev".to_string()};
+/// ```
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct OwningAppInfo {
     /// Name of your app (e.g. "Hearthstone").
     pub name: String,
     /// Author of your app (e.g. "Blizzard").
     pub author: String,
-}
-
-pub trait AppInfo {
-    /// Name of your app (e.g. "Hearthstone").
-    fn name(&self) -> &str;
-    /// Author of your app (e.g. "Blizzard").
-    fn author(&self) -> &str;
 }
 
 impl AppInfo for StaticAppInfo {
