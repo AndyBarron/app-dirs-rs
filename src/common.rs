@@ -25,8 +25,20 @@ pub struct AppInfo {
     pub author: &'static str,
 }
 
+/// A version of AppInfo that owns it's strings
+/// The `author` property is currently only used by Windows, as macOS and *nix
+/// specifications don't require it. Make sure your `name` string is unique!
+pub struct OwnedAppInfo {
+    /// Name of your app (e.g. "Hearthstone").
+    pub name: String,
+    /// Author of your app (e.g. "Blizzard").
+    pub author: String,
+}
+
 /// Implement this trait for object that will be passed to
 /// app_dir, get_app_dir, app_root, get_app_root functions
+/// The `author` property is currently only used by Windows, as macOS and *nix
+/// specifications don't require it. Make sure your `name` string is unique!
 pub trait AppMeta {
     /// Returns name of your app (e.g. "Hearthstone").
     fn get_name(&self) -> &str;
@@ -41,6 +53,15 @@ impl AppMeta for AppInfo {
 
     fn get_author(&self) -> &str {
         self.author
+    }
+}
+
+impl AppMeta for OwnedAppInfo {
+    fn get_name(&self) -> &str {
+        &self.name
+    }
+    fn get_author(&self) -> &str {
+        &self.author
     }
 }
 
