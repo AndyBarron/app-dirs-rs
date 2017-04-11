@@ -42,8 +42,8 @@ pub struct StaticAppInfo {
 /// config file.
 ///
 /// ```
-/// use app_dirs::DynamicAppInfo;
-/// let APP_INFO = DynamicAppInfo{name: "Awesome App".to_string(), author: "Dedicated Dev".to_string()};
+/// use app_dirs::OwningAppInfo;
+/// let APP_INFO = OwningAppInfo{name: "Awesome App".to_string(), author: "Dedicated Dev".to_string()};
 /// ```
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct OwningAppInfo {
@@ -72,7 +72,6 @@ impl AppInfo for OwningAppInfo {
         &self.author
     }
 }
-
 
 /// Enum specifying the type of app data you want to store.
 ///
