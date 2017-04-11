@@ -1,4 +1,4 @@
-use common::{AppDataType, AppDirsError, AppInfo};
+use common::{AppDataType, AppDirsError, AppMeta};
 use std::fs;
 use std::path::PathBuf;
 use utils;
@@ -33,7 +33,7 @@ mod platform {
 /// If the directory structure does not exist, this function will recursively
 /// create the full hierarchy. Therefore, a result of `Ok` guarantees that the
 /// returned path exists.
-pub fn app_dir(t: AppDataType, app: &AppInfo, path: &str) -> Result<PathBuf, AppDirsError> {
+pub fn app_dir<T>(t: AppDataType, app: &T, path: &str) -> Result<PathBuf, AppDirsError> where T: AppMeta {
     let path = try!(get_app_dir(t, app, &path));
     match fs::create_dir_all(&path) {
         Ok(..) => Ok(path),
@@ -50,8 +50,8 @@ pub fn app_dir(t: AppDataType, app: &AppInfo, path: &str) -> Result<PathBuf, App
 /// A result of `Ok` means that we determined where the data SHOULD go, but
 /// it DOES NOT guarantee that the directory actually exists. (See
 /// [`app_dir`](fn.app_dir.html).)
-pub fn get_app_dir(t: AppDataType, app: &AppInfo, path: &str) -> Result<PathBuf, AppDirsError> {
-    if app.author.len() == 0 || app.name.len() == 0 {
+pub fn get_app_dir<T>(t: AppDataType, app: &T, path: &str) -> Result<PathBuf, AppDirsError> where T: AppMeta {
+    if app.get_author().len() == 0 || app.get_name().len() == 0 {
         return Err(AppDirsError::InvalidAppInfo);
     }
     app_root(t, app).map(|mut root| {
@@ -68,7 +68,7 @@ pub fn get_app_dir(t: AppDataType, app: &AppInfo, path: &str) -> Result<PathBuf,
 /// If the directory structure does not exist, this function will recursively
 /// create the full hierarchy. Therefore, a result of `Ok` guarantees that the
 /// returned path exists.
-pub fn app_root(t: AppDataType, app: &AppInfo) -> Result<PathBuf, AppDirsError> {
+pub fn app_root<T>(t: AppDataType, app: &T) -> Result<PathBuf, AppDirsError> where T: AppMeta {
     let path = try!(get_app_root(t, app));
     match fs::create_dir_all(&path) {
         Ok(..) => Ok(path),
@@ -82,15 +82,15 @@ pub fn app_root(t: AppDataType, app: &AppInfo) -> Result<PathBuf, AppDirsError> 
 /// A result of `Ok` means that we determined where the data SHOULD go, but
 /// it DOES NOT guarantee that the directory actually exists. (See
 /// [`app_root`](fn.app_root.html).)
-pub fn get_app_root(t: AppDataType, app: &AppInfo) -> Result<PathBuf, AppDirsError> {
-    if app.author.len() == 0 || app.name.len() == 0 {
+pub fn get_app_root<T>(t: AppDataType, app: &T) -> Result<PathBuf, AppDirsError> where T: AppMeta {
+    if app.get_author().len() == 0 || app.get_name().len() == 0 {
         return Err(AppDirsError::InvalidAppInfo);
     }
     data_root(t).map(|mut root| {
         if platform::USE_AUTHOR {
-            root.push(utils::sanitized(app.author));
+            root.push(utils::sanitized(app.get_author()));
         }
-        root.push(utils::sanitized(app.name));
+        root.push(utils::sanitized(app.get_name()));
         root
     })
 }
