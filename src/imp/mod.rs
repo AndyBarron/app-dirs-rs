@@ -51,7 +51,7 @@ pub fn app_dir(t: AppDataType, app: &AppInfo, path: &str) -> Result<PathBuf, App
 /// it DOES NOT guarantee that the directory actually exists. (See
 /// [`app_dir`](fn.app_dir.html).)
 pub fn get_app_dir(t: AppDataType, app: &AppInfo, path: &str) -> Result<PathBuf, AppDirsError> {
-    if app.author.len() == 0 || app.name.len() == 0 {
+    if app.author().len() == 0 || app.name().len() == 0 {
         return Err(AppDirsError::InvalidAppInfo);
     }
     app_root(t, app).map(|mut root| {
@@ -83,14 +83,14 @@ pub fn app_root(t: AppDataType, app: &AppInfo) -> Result<PathBuf, AppDirsError> 
 /// it DOES NOT guarantee that the directory actually exists. (See
 /// [`app_root`](fn.app_root.html).)
 pub fn get_app_root(t: AppDataType, app: &AppInfo) -> Result<PathBuf, AppDirsError> {
-    if app.author.len() == 0 || app.name.len() == 0 {
+    if app.author().len() == 0 || app.name().len() == 0 {
         return Err(AppDirsError::InvalidAppInfo);
     }
     data_root(t).map(|mut root| {
         if platform::USE_AUTHOR {
-            root.push(utils::sanitized(app.author));
+            root.push(utils::sanitized(app.author()));
         }
-        root.push(utils::sanitized(app.name));
+        root.push(utils::sanitized(app.name()));
         root
     })
 }
