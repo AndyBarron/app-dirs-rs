@@ -25,6 +25,25 @@ pub struct AppInfo {
     pub author: &'static str,
 }
 
+/// Implement this trait for object that will be passed to
+/// app_dir, get_app_dir, app_root, get_app_root functions
+pub trait AppMeta {
+    /// Returns name of your app (e.g. "Hearthstone").
+    fn get_name(&self) -> &str;
+    /// Returns author of your app (e.g. "Blizzard").
+    fn get_author(&self) -> &str;
+}
+
+impl AppMeta for AppInfo {
+    fn get_name(&self) -> &str {
+        self.name
+    }
+
+    fn get_author(&self) -> &str {
+        self.author
+    }
+}
+
 /// Enum specifying the type of app data you want to store.
 ///
 /// **Different platforms are NOT guaranteed to distinguish between each data
