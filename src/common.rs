@@ -5,8 +5,8 @@ use std;
 /// It's recommended to create a single `const` instance of `AppInfo`:
 ///
 /// ```
-/// use app_dirs::AppInfo;
-/// const APP_INFO: AppInfo = AppInfo{name: "Awesome App", author: "Dedicated Dev"};
+/// use app_dirs::StaticAppInfo;
+/// const APP_INFO: StaticAppInfo = StaticAppInfo{name: "Awesome App", author: "Dedicated Dev"};
 /// ```
 ///
 /// # Caveats
@@ -18,12 +18,16 @@ use std;
 /// The `author` property is currently only used by Windows, as macOS and *nix
 /// specifications don't require it. Make sure your `name` string is unique!
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
-pub struct AppInfo {
+pub struct StaticAppInfo {
     /// Name of your app (e.g. "Hearthstone").
     pub name: &'static str,
     /// Author of your app (e.g. "Blizzard").
     pub author: &'static str,
 }
+
+/// Old name for `StaticAppInfo`. `AppInfo` is deprecated.
+#[deprecated(since = "1.2.0", note = "Use StaticAppInfo instead")]
+pub type AppInfo = StaticAppInfo;
 
 /// A version of AppInfo that owns it's strings
 /// The `author` property is currently only used by Windows, as macOS and *nix

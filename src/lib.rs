@@ -5,7 +5,7 @@
 //! extern crate app_dirs;
 //! use app_dirs::*;
 //!
-//! const APP_INFO: AppInfo = AppInfo{name: "CoolApp", author: "SuperDev"};
+//! const APP_INFO: StaticAppInfo = StaticAppInfo{name: "CoolApp", author: "SuperDev"};
 //!
 //! fn main () {
 //!     // Where should I store my app's per-user configuration data?
