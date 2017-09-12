@@ -23,7 +23,7 @@ mod platform {
     mod windows;
     pub use self::windows::*;
 }
-#[cfg(not(any(windows, unix, target_os="macos",)))]
+#[cfg(not(any(windows, unix, target_os="macos", target_os="redox")))]
 mod platform {
     mod unknown;
     pub use self::unknown::*;
