@@ -34,7 +34,7 @@ mod platform {
 /// create the full hierarchy. Therefore, a result of `Ok` guarantees that the
 /// returned path exists.
 pub fn app_dir(t: AppDataType, app: &AppInfo, path: &str) -> Result<PathBuf, AppDirsError> {
-    let path = try!(get_app_dir(t, app, &path));
+    let path = try!(get_app_dir(t, app, path));
     match fs::create_dir_all(&path) {
         Ok(..) => Ok(path),
         Err(e) => Err(e.into()),
@@ -51,11 +51,11 @@ pub fn app_dir(t: AppDataType, app: &AppInfo, path: &str) -> Result<PathBuf, App
 /// it DOES NOT guarantee that the directory actually exists. (See
 /// [`app_dir`](fn.app_dir.html).)
 pub fn get_app_dir(t: AppDataType, app: &AppInfo, path: &str) -> Result<PathBuf, AppDirsError> {
-    if app.author.len() == 0 || app.name.len() == 0 {
+    if app.author.is_empty() || app.name.is_empty() {
         return Err(AppDirsError::InvalidAppInfo);
     }
     app_root(t, app).map(|mut root| {
-        for component in path.split("/").filter(|s| s.len() > 0) {
+        for component in path.split('/').filter(|s| !s.is_empty()) {
             root.push(utils::sanitized(component));
         }
         root
@@ -83,7 +83,7 @@ pub fn app_root(t: AppDataType, app: &AppInfo) -> Result<PathBuf, AppDirsError> 
 /// it DOES NOT guarantee that the directory actually exists. (See
 /// [`app_root`](fn.app_root.html).)
 pub fn get_app_root(t: AppDataType, app: &AppInfo) -> Result<PathBuf, AppDirsError> {
-    if app.author.len() == 0 || app.name.len() == 0 {
+    if app.author.is_empty() || app.name.is_empty() {
         return Err(AppDirsError::InvalidAppInfo);
     }
     data_root(t).map(|mut root| {
