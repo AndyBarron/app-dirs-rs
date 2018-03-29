@@ -58,8 +58,8 @@ impl AppDataType {
     }
 }
 
-const ERR_NOT_SUPPORTED: &'static str = "App data directories not supported";
-const ERR_INVALID_APP_INFO: &'static str = "Invalid app name or author";
+const ERR_NOT_SUPPORTED: &str = "App data directories not supported";
+const ERR_INVALID_APP_INFO: &str = "Invalid app name or author";
 
 /// Error type for any `app_dirs` operation.
 #[derive(Debug)]
@@ -98,8 +98,7 @@ impl std::error::Error for AppDirsError {
         use AppDirsError::*;
         match *self {
             Io(ref e) => Some(e),
-            NotSupported => None,
-            InvalidAppInfo => None,
+            NotSupported | InvalidAppInfo=> None,
         }
     }
 }
