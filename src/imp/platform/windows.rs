@@ -14,13 +14,13 @@
 //
 // Credit for the above code goes to Connorcpu (https://github.com/Connorcpu).
 
-extern crate ole32;
-extern crate shell32;
 extern crate winapi;
 use AppDataType::*;
 use common::*;
-use self::shell32::SHGetKnownFolderPath;
-use self::winapi::{GUID, PWSTR};
+use self::winapi::shared::guiddef::GUID;
+use self::winapi::um::combaseapi::CoTaskMemFree;
+use self::winapi::um::shlobj::SHGetKnownFolderPath;
+use self::winapi::um::winnt::PWSTR;
 use std::ffi::OsString;
 use std::os::windows::ffi::OsStringExt;
 use std::path::PathBuf;
@@ -71,7 +71,7 @@ static FOLDERID_ProgramData: GUID = GUID {
 struct SafePwstr(PWSTR);
 impl Drop for SafePwstr {
     fn drop(&mut self) {
-        unsafe { ole32::CoTaskMemFree(self.0 as *mut _) }
+        unsafe { CoTaskMemFree(self.0 as *mut _) }
     }
 }
 
