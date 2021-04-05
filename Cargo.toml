@@ -1,19 +1,10 @@
 [package]
 name = "app_dirs"
-version = "1.2.1"
+version = "2.0.0"
 authors = ["Andy Barron <AndrewLBarron@gmail.com>"]
 
-description = "Put your app's data in the right place on every platform"
-documentation = "https://docs.rs/app_dirs"
+description = "Put your app's data in the right place on every platform [DEPRECATED]"
 repository = "https://github.com/AndyBarron/app-dirs-rs"
 readme = "README.md"
 keywords = ["application", "data", "storage", "location", "directory"]
 license = "MIT"
-
-[target.'cfg(all(unix, not(target_os="macos")))'.dependencies]
-xdg = "^2.0.0"
-
-[target.'cfg(windows)'.dependencies]
-ole32-sys = "^0.2.0"
-shell32-sys = "^0.1.1"
-winapi = "^0.2.8"
