@@ -1,6 +1,6 @@
 [package]
 name = "app_dirs"
-version = "2.0.0"
+version = "2.0.1"
 authors = ["Andy Barron <AndrewLBarron@gmail.com>"]
 
 description = "Put your app's data in the right place on every platform [DEPRECATED]"
